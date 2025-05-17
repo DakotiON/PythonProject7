@@ -8,8 +8,14 @@ class ProductBase(BaseModel):
     date: datetime
 
 
-class ProductCreate(BaseModel):
+class ProductCreate(ProductBase):
     pass
+
+
+class ProductUpdate(ProductCreate):
+    name: str | None = None
+    description: str | None = None
+    date: datetime | None = None
 
 
 class Product(ProductBase):

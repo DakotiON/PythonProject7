@@ -3,7 +3,7 @@ from core.models import Product
 from sqlalchemy.engine import Result
 from sqlalchemy import select
 
-from .schemas import ProductCreate
+from .schemas import ProductCreate, ProductUpdate
 
 
 async def get_products(session: AsyncSession) -> list[Product]:
@@ -14,7 +14,7 @@ async def get_products(session: AsyncSession) -> list[Product]:
         stmt
     )  # берем результат из stmt и ожидаем пока сессия сделает execute из бд
     products = (
-        result.scalar().all()
+        result.scalars().all()
     )  # помещаем результат в продукт и берем все элементы по scalar
     return list(products)
 
@@ -32,3 +32,22 @@ async def create_product(session: AsyncSession, product_in: ProductCreate) -> Pr
     session.add(product)  # добавляем продукт в сессию
     await session.commit()
     return product
+
+
+async def update_product_partial(
+    session: AsyncSession,
+    product: Product,
+    product_update: ProductUpdate,
+):
+    for name, description in product_update.model_dump(exclude_unset=True).items():
+        setattr(product, name, description)
+    await session.commit()
+    return product
+
+
+async def delete_product(
+    session: AsyncSession,
+    product: Product,
+) -> None:
+    await session.delete(product)
+    await session.commit()
