@@ -12,12 +12,13 @@ from users.views import router as user_router
 from apiv1 import router as router_v1
 
 
+# lifespan для ручной разработки
 @asynccontextmanager
 async def lifespan(app: FastAPI):
-    async with db_helper.engine.begin() as conn:
-        await conn.run_sync(
-            Base.metadata.create_all
-        )  # так будет выполнено создание таблицы
+    # async with db_helper.engine.begin() as conn:
+    # await conn.run_sync(
+    # Base.metadata.create_all
+    # )  # так будет выполнено создание таблицы
     yield
 
 
